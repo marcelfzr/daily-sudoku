@@ -1,73 +1,123 @@
-# React + TypeScript + Vite
+# Daily Sudoku
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A clean, fast Sudoku web app with daily puzzles. Built for both mobile and desktop.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Daily Puzzles** - One unique puzzle every day, seeded by date
+- **Multiple Difficulties** - Choose from Easy, Medium, Hard, or Expert levels
+- **Puzzle Archive** - Browse and play past daily puzzles
+- **Statistics Tracking** - Track completed games, streaks, and average completion times
+- **Auto-Save** - Game progress is automatically saved to local storage
+- **Theme Support** - Light and dark mode
+- **Undo/Redo** - Full history navigation for moves
+- **Notes Mode** - Add pencil marks to cells
+- **Error Validation** - Instant feedback on conflicts
+- **Responsive Design** - Optimized for both mobile and desktop play
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **React 19** - UI framework
+- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
+- **React Router** - Client-side routing
+- **Lucide React** - Icon library
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js (v18 or higher recommended)
+- npm or yarn
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Installation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# Clone the repository
+git clone <repository-url>
+cd sudoku
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The app will be available at `http://localhost:5173`
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Build for Production
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build
 ```
+
+The production-ready files will be in the `dist` directory.
+
+### Preview Production Build
+
+```bash
+npm run preview
+```
+
+## Project Structure
+
+```
+src/
+├── components/        # Reusable UI components
+│   ├── AppShell.tsx   # Main layout wrapper
+│   ├── GameToolbar.tsx
+│   ├── NumberPad.tsx
+│   └── SudokuBoard.tsx
+├── hooks/             # Custom React hooks
+│   └── useSudokuGame.ts
+├── lib/               # Core logic and utilities
+│   ├── storage/       # LocalStorage management
+│   ├── sudoku/        # Puzzle generation, solving, validation
+│   ├── theme.ts       # Theme utilities
+│   └── time.ts        # Time formatting
+├── routes/            # Page components
+│   ├── HomePage.tsx
+│   ├── DailyPage.tsx
+│   ├── ArchivePage.tsx
+│   └── SettingsPage.tsx
+└── App.tsx            # Root component with routing
+```
+
+## How It Works
+
+### Puzzle Generation
+
+Puzzles are generated using a seeded random number generator based on the date, ensuring that everyone gets the same puzzle on the same day. The generator:
+
+1. Creates a valid, complete Sudoku solution
+2. Removes numbers strategically based on difficulty level
+3. Ensures the puzzle has a unique solution
+
+### Data Persistence
+
+All game state, statistics, and settings are stored in browser `localStorage`:
+
+- Active game progress (board state, time, moves)
+- Completion statistics (games completed, streaks, times)
+- User settings (difficulty, theme preferences)
+
+## Development
+
+### Code Quality
+
+```bash
+# Run ESLint
+npm run lint
+```
+
+### Type Checking
+
+```bash
+# Run TypeScript compiler in check mode
+npm run build
+```
+
+## License
+
+This project is private and not licensed for public use.
