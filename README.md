@@ -120,4 +120,4 @@ npm run build
 
 ## License
 
-This project is private and not licensed for public use.
+This project is licensed under the MIT License - see the [LICENSE.txt](LICENSE.txt) file for details.
