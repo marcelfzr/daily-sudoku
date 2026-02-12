@@ -21,6 +21,7 @@ export type GameSnapshot = {
 
 export type StoredGame = {
   date: string
+  difficulty: Difficulty
   values: Board
   notes: number[]
   mistakes: number
@@ -41,6 +42,7 @@ export type GameStats = {
 
 export type AppSettings = {
   themeMode: 'system' | 'light' | 'dark'
+  defaultDifficulty: Difficulty
   autoRemoveNotes: boolean
   highlightPeers: boolean
   autoCheckConflicts: boolean

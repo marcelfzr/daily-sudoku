@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom'
 import { formatDateKey } from '../lib/sudoku/board'
 import { buildDailyPuzzle } from '../lib/sudoku/generator'
-import { loadStats, loadStoredGame } from '../lib/storage/storage'
+import { loadSettings, loadStats, loadStoredGame } from '../lib/storage/storage'
 import { formatDuration } from '../lib/time'
 
 export function HomePage() {
   const today = formatDateKey(new Date())
-  const puzzle = buildDailyPuzzle(today)
-  const saved = loadStoredGame(today)
+  const settings = loadSettings()
+  const puzzle = buildDailyPuzzle(today, settings.defaultDifficulty)
+  const saved = loadStoredGame(today, settings.defaultDifficulty)
   const stats = loadStats()
   const averageTime =
     stats.completedGames > 0 ? Math.round(stats.totalTimeSeconds / stats.completedGames) : 0

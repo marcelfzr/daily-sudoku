@@ -4,6 +4,7 @@ type GameToolbarProps = {
   notesMode: boolean
   canUndo: boolean
   canRedo: boolean
+  mistakeFlash: boolean
   onToggleNotes: () => void
   onUndo: () => void
   onRedo: () => void
@@ -15,6 +16,7 @@ export function GameToolbar({
   notesMode,
   canUndo,
   canRedo,
+  mistakeFlash,
   onToggleNotes,
   onUndo,
   onRedo,
@@ -32,13 +34,26 @@ export function GameToolbar({
       >
         <Pencil size={20} />
       </button>
-      <button type="button" onClick={onUndo} disabled={!canUndo} aria-label="Undo" title="Undo">
+      <button
+        type="button"
+        className={mistakeFlash ? 'attention' : ''}
+        onClick={onUndo}
+        disabled={!canUndo}
+        aria-label="Undo"
+        title="Undo"
+      >
         <Undo2 size={20} />
       </button>
       <button type="button" onClick={onRedo} disabled={!canRedo} aria-label="Redo" title="Redo">
         <Redo2 size={20} />
       </button>
-      <button type="button" onClick={onClear} aria-label="Erase cell" title="Erase">
+      <button
+        type="button"
+        className={mistakeFlash ? 'attention' : ''}
+        onClick={onClear}
+        aria-label="Erase cell"
+        title="Erase"
+      >
         <Eraser size={20} />
       </button>
       <button type="button" onClick={onRestart} aria-label="Restart puzzle" title="Restart">

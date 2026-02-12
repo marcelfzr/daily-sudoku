@@ -1,4 +1,4 @@
-import type { AppSettings, GameStats, StoredGame } from '../sudoku/types'
+import type { AppSettings, Difficulty, GameStats, StoredGame } from '../sudoku/types'
 
 const GAME_KEY_PREFIX = 'sudoku:game:'
 const SETTINGS_KEY = 'sudoku:settings'
@@ -6,6 +6,7 @@ const STATS_KEY = 'sudoku:stats'
 
 const defaultSettings: AppSettings = {
   themeMode: 'system',
+  defaultDifficulty: 'medium',
   autoRemoveNotes: true,
   highlightPeers: true,
   autoCheckConflicts: true,
@@ -45,16 +46,27 @@ export const saveStats = (stats: GameStats) => {
   localStorage.setItem(STATS_KEY, JSON.stringify(stats))
 }
 
-export const loadStoredGame = (date: string): StoredGame | null => {
+const gameStorageKey = (date: string, difficulty: Difficulty) =>
+  `${GAME_KEY_PREFIX}${date}:${difficulty}`
+
+export const loadStoredGame = (date: string, difficulty: Difficulty): StoredGame | null => {
   const entry = safeParse<StoredGame | null>(
+    localStorage.getItem(gameStorageKey(date, difficulty)),
+    null,
+  )
+  if (entry) return entry
+
+  // Backward compatibility with the previous date-only key format.
+  const legacyEntry = safeParse<Omit<StoredGame, 'difficulty'> | null>(
     localStorage.getItem(`${GAME_KEY_PREFIX}${date}`),
     null,
   )
-  return entry
+  if (!legacyEntry) return null
+  return { ...legacyEntry, difficulty }
 }
 
 export const saveStoredGame = (game: StoredGame) => {
-  localStorage.setItem(`${GAME_KEY_PREFIX}${game.date}`, JSON.stringify(game))
+  localStorage.setItem(gameStorageKey(game.date, game.difficulty), JSON.stringify(game))
 }
 
 export const markGameCompleted = (date: string, elapsedSeconds: number) => {

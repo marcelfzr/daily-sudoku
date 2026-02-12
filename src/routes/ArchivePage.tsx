@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom'
 import { listArchiveDates } from '../lib/sudoku/generator'
-import { loadStoredGame } from '../lib/storage/storage'
+import { loadSettings, loadStoredGame } from '../lib/storage/storage'
 import { formatDuration } from '../lib/time'
 
 export function ArchivePage() {
   const dates = listArchiveDates(90)
+  const settings = loadSettings()
 
   return (
     <section className="panel stack-lg">
@@ -13,7 +14,7 @@ export function ArchivePage() {
 
       <div className="archive-list">
         {dates.map((date) => {
-          const game = loadStoredGame(date)
+          const game = loadStoredGame(date, settings.defaultDifficulty)
           return (
             <Link key={date} className="archive-item" to={`/daily/${date}`}>
               <span>{date}</span>

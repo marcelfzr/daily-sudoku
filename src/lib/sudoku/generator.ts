@@ -10,12 +10,6 @@ const clueTargets: Record<Difficulty, number> = {
   expert: 27,
 }
 
-const difficultyByDay = (date: string): Difficulty => {
-  const day = Number(date.slice(-2))
-  const order: Difficulty[] = ['easy', 'medium', 'hard', 'expert']
-  return order[day % order.length]
-}
-
 const createSolvedBoard = (seed: string): Board => {
   const random = mulberry32(hashString(`${seed}:solution`))
   const board = emptyBoard()
@@ -53,15 +47,18 @@ const carvePuzzle = (solution: Board, seed: string, difficulty: Difficulty): Boa
   return puzzle
 }
 
-export const buildDailyPuzzle = (dateInput?: string): PuzzleDefinition => {
+export const buildDailyPuzzle = (
+  dateInput?: string,
+  difficulty: Difficulty = 'medium',
+): PuzzleDefinition => {
   const date = dateInput ?? formatDateKey(new Date())
-  const difficulty = difficultyByDay(date)
-  const solved = createSolvedBoard(date)
-  const given = carvePuzzle(solved, date, difficulty)
+  const seedBase = `${date}:${difficulty}`
+  const solved = createSolvedBoard(seedBase)
+  const given = carvePuzzle(solved, seedBase, difficulty)
   const clueCount = given.filter((value) => value !== 0).length
 
   return {
-    id: `daily-${date}`,
+    id: `daily-${date}-${difficulty}`,
     date,
     difficulty,
     given,

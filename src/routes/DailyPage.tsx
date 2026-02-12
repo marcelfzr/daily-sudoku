@@ -32,8 +32,9 @@ type DailyGameProps = {
 
 function DailyGame({ date }: DailyGameProps) {
   const settings = useMemo(() => loadSettings(), [])
-  const puzzle = useMemo(() => buildDailyPuzzle(date), [date])
-  const storedGame = useMemo(() => loadStoredGame(date), [date])
+  const difficulty = settings.defaultDifficulty
+  const puzzle = useMemo(() => buildDailyPuzzle(date, difficulty), [date, difficulty])
+  const storedGame = useMemo(() => loadStoredGame(date, difficulty), [date, difficulty])
 
   const game = useSudokuGame({
     puzzle,
@@ -140,6 +141,7 @@ function DailyGame({ date }: DailyGameProps) {
             notesMode={game.notesMode}
             canUndo={game.canUndo}
             canRedo={game.canRedo}
+            mistakeFlash={game.mistakeFlash}
             onToggleNotes={() => game.setNotesMode(!game.notesMode)}
             onUndo={game.undo}
             onRedo={game.redo}

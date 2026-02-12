@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   clearNoteDigit,
   cloneBoard,
@@ -33,7 +33,11 @@ const buildInitialSnapshot = (
   puzzle: PuzzleDefinition,
   storedGame: StoredGame | null,
 ): GameSnapshot => {
-  if (storedGame && storedGame.date === puzzle.date) {
+  if (
+    storedGame &&
+    storedGame.date === puzzle.date &&
+    storedGame.difficulty === puzzle.difficulty
+  ) {
     return {
       values: cloneBoard(storedGame.values),
       notes: [...storedGame.notes],
@@ -57,6 +61,8 @@ export const useSudokuGame = ({
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [notesMode, setNotesMode] = useState(storedGame?.notesMode ?? false)
   const [elapsedSeconds, setElapsedSeconds] = useState(storedGame?.elapsedSeconds ?? 0)
+  const [mistakeFlash, setMistakeFlash] = useState(false)
+  const mistakeFlashTimeoutRef = useRef<number | null>(null)
   const [past, setPast] = useState<GameSnapshot[]>([])
   const [future, setFuture] = useState<GameSnapshot[]>([])
   const [present, setPresent] = useState(() => buildInitialSnapshot(puzzle, storedGame))
@@ -79,6 +85,7 @@ export const useSudokuGame = ({
   useEffect(() => {
     onPersist({
       date: puzzle.date,
+      difficulty: puzzle.difficulty,
       values: present.values,
       notes: present.notes,
       mistakes: present.mistakes,
@@ -88,11 +95,20 @@ export const useSudokuGame = ({
       completedAt: completed ? new Date().toISOString() : null,
       updatedAt: new Date().toISOString(),
     })
-  }, [completed, elapsedSeconds, notesMode, onPersist, present, puzzle.date])
+  }, [completed, elapsedSeconds, notesMode, onPersist, present, puzzle.date, puzzle.difficulty])
 
   useEffect(() => {
     if (completed) onComplete(elapsedSeconds)
   }, [completed, elapsedSeconds, onComplete])
+
+  useEffect(
+    () => () => {
+      if (mistakeFlashTimeoutRef.current !== null) {
+        window.clearTimeout(mistakeFlashTimeoutRef.current)
+      }
+    },
+    [],
+  )
 
   const pushHistory = (next: GameSnapshot) => {
     setPast((history) => [...history.slice(-99), cloneSnapshot(present)])
@@ -135,6 +151,14 @@ export const useSudokuGame = ({
 
     if (settings.autoCheckConflicts && digit !== puzzle.solution[selectedIndex]) {
       next.mistakes += 1
+      setMistakeFlash(true)
+      if (mistakeFlashTimeoutRef.current !== null) {
+        window.clearTimeout(mistakeFlashTimeoutRef.current)
+      }
+      mistakeFlashTimeoutRef.current = window.setTimeout(() => {
+        setMistakeFlash(false)
+        mistakeFlashTimeoutRef.current = null
+      }, 1200)
     }
 
     pushHistory(next)
@@ -191,6 +215,7 @@ export const useSudokuGame = ({
     setNotesMode,
     elapsedSeconds,
     completed,
+    mistakeFlash,
     conflicts,
     canUndo: past.length > 0,
     canRedo: future.length > 0,

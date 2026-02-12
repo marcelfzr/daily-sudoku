@@ -253,7 +253,15 @@ h2 {
   gap: 0.45rem;
 }
 
-.theme-options button {
+.difficulty-options {
+  margin-top: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.theme-options button,
+.difficulty-options button {
   min-height: 2.4rem;
   border: 1px solid var(--line);
   border-radius: 0.65rem;
@@ -261,7 +269,8 @@ h2 {
   color: var(--text);
 }
 
-.theme-options button.active {
+.theme-options button.active,
+.difficulty-options button.active {
   border-color: var(--accent);
   background: var(--accent-soft);
 }
@@ -425,6 +434,11 @@ h2 {
 .game-toolbar button.active {
   border-color: var(--accent);
   background: var(--accent-soft);
+}
+
+.game-toolbar button.attention {
+  border-color: color-mix(in srgb, var(--danger) 45%, var(--line));
+  background: color-mix(in srgb, var(--danger) 12%, var(--surface-soft));
 }
 
 .game-toolbar button:disabled {

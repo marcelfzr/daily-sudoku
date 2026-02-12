@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { loadSettings, saveSettings } from '../lib/storage/storage'
-import type { AppSettings } from '../lib/sudoku/types'
+import type { AppSettings, Difficulty } from '../lib/sudoku/types'
 import { applyThemeFromSettings } from '../lib/theme'
 
 const toggleSettingLabels: Record<
-  Exclude<keyof AppSettings, 'themeMode'>,
+  Exclude<keyof AppSettings, 'themeMode' | 'defaultDifficulty'>,
   string
 > = {
   autoRemoveNotes: 'Auto remove notes when entering a number',
@@ -13,6 +13,8 @@ const toggleSettingLabels: Record<
   highContrast: 'Use high contrast board colors',
 }
 
+const difficulties: Difficulty[] = ['easy', 'medium', 'hard', 'expert']
+
 export function SettingsPage() {
   const [settings, setSettings] = useState<AppSettings>(loadSettings())
 
@@ -20,7 +22,7 @@ export function SettingsPage() {
     applyThemeFromSettings(settings)
   }, [settings])
 
-  const toggle = (key: Exclude<keyof AppSettings, 'themeMode'>) => {
+  const toggle = (key: Exclude<keyof AppSettings, 'themeMode' | 'defaultDifficulty'>) => {
     const next = { ...settings, [key]: !settings[key] }
     setSettings(next)
     saveSettings(next)
@@ -28,6 +30,12 @@ export function SettingsPage() {
 
   const setThemeMode = (themeMode: AppSettings['themeMode']) => {
     const next = { ...settings, themeMode }
+    setSettings(next)
+    saveSettings(next)
+  }
+
+  const setDefaultDifficulty = (defaultDifficulty: Difficulty) => {
+    const next = { ...settings, defaultDifficulty }
     setSettings(next)
     saveSettings(next)
   }
@@ -55,9 +63,27 @@ export function SettingsPage() {
         </div>
       </div>
 
+      <div className="theme-picker" role="radiogroup" aria-label="Default difficulty">
+        <span className="muted">Default difficulty</span>
+        <div className="difficulty-options">
+          {difficulties.map((difficulty) => (
+            <button
+              key={difficulty}
+              type="button"
+              className={settings.defaultDifficulty === difficulty ? 'active' : ''}
+              onClick={() => setDefaultDifficulty(difficulty)}
+              role="radio"
+              aria-checked={settings.defaultDifficulty === difficulty}
+            >
+              {difficulty[0].toUpperCase() + difficulty.slice(1)}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="settings-list">
         {(Object.keys(toggleSettingLabels) as Array<
-          Exclude<keyof AppSettings, 'themeMode'>
+          Exclude<keyof AppSettings, 'themeMode' | 'defaultDifficulty'>
         >).map((key) => (
           <label className="setting-row" key={key}>
             <input
