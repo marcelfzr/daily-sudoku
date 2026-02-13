@@ -154,6 +154,19 @@ function DailyGame({ date }: DailyGameProps) {
       </div>
 
       <div className="sticky-input">
+        <div className="mobile-toolbar">
+          <GameToolbar
+            notesMode={game.notesMode}
+            canUndo={game.canUndo}
+            canRedo={game.canRedo}
+            mistakeFlash={game.mistakeFlash}
+            onToggleNotes={() => game.setNotesMode(!game.notesMode)}
+            onUndo={game.undo}
+            onRedo={game.redo}
+            onClear={game.clearCell}
+            onRestart={game.restart}
+          />
+        </div>
         <NumberPad
           disabled={game.completed}
           disabledDigits={disabledDigits}

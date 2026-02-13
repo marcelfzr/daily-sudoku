@@ -320,6 +320,7 @@ h2 {
 
 .controls-panel {
   width: fit-content;
+  display: none;
 }
 
 .board-panel {
@@ -422,6 +423,7 @@ h2 {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 0.5rem;
+  justify-content: center;
 }
 
 .game-toolbar button {
@@ -475,6 +477,17 @@ h2 {
   padding-bottom: calc(0.6rem + env(safe-area-inset-bottom));
 }
 
+.mobile-toolbar {
+  display: block;
+  max-width: min(100%, 560px);
+  margin: 0 auto 0.4rem;
+}
+
+.mobile-toolbar .game-toolbar {
+  position: static;
+  top: auto;
+}
+
 .number-pad {
   display: grid;
   grid-template-columns: repeat(9, minmax(0, 1fr));
@@ -521,7 +534,12 @@ input:focus-visible {
   }
 
   .controls-panel {
+    display: block;
     justify-self: end;
+  }
+
+  .mobile-toolbar {
+    display: none;
   }
 
   .sticky-input {
@@ -541,7 +559,7 @@ input:focus-visible {
   }
 
   .game-toolbar {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(5, var(--toolbar-btn));
     --toolbar-btn: 2.3rem;
     --toolbar-icon: 1rem;
   }
